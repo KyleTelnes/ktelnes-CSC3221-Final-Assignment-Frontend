@@ -52,6 +52,7 @@
             '<table class="table table-bordered table-hover"> \n' +
             '   <thead>\n' +
             '       <tr>\n' +
+            '           <th scope="col">ID</th> \n'+
             '           <th scope="col">Title</th> \n'+
             '           <th scope="col">Description</th> \n'+
             '           <th scope="col">Year</th> \n'+
@@ -65,6 +66,7 @@
         for (let book in data){
             table +=
                 '       <tr>\n' +
+                '           <td>' + data[book]["_id"]+  '</td>\n' +
                 '           <td>' + data[book]["title"]+  '</td>\n' +
                 '           <td>' + data[book]["description"]+  '</td>\n' +
                 '           <td>' + data[book]["year"]+  '</td>\n' +
