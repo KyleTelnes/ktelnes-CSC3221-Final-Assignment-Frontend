@@ -39,6 +39,176 @@
         </div>
     </div>
 </nav>
+<div class="container" style="padding-top: 30px">
+    <h2>Enter the ID of the Book to Change</h2>
+    <div class="row">
+        <div class="col">
+            <label for="inputID" class="visually-hidden">Book ID:</label>
+            <input type="text" class="form-control" id="inputID" placeholder="Book ID">
+        </div>
+        <div class="col">
+            <button class="btn btn-primary mb-3" id="submit">Find Book</button>
+        </div>
+    </div>
+    <div class="container" id="output">
+
+    </div>
+</div>
+<script>
+    function CreateForm(data){
+        let form = "";
+        //Displays current information to the user
+        form =
+            '<table class="table table-bordered table-hover"> \n' +
+            '   <thead>\n' +
+            '       <tr>\n' +
+            '           <th scope="col">Current ID</th> \n'+
+            '           <th scope="col">Current Title</th> \n'+
+            '           <th scope="col">Current Description</th> \n'+
+            '           <th scope="col">Current Year</th> \n'+
+            '           <th scope="col">Current Author</th> \n'+
+            '           <th scope="col">Current Hard Cover</th> \n'+
+            '           <th scope="col">Current Price</th> \n'+
+            '       </tr>\n' +
+            '   </thead>\n' +
+            '   <tbody>\n';
+        form +=
+            '       <tr>\n' +
+            '           <td>' + data["_id"]+  '</td>\n' +
+            '           <td>' + data["title"]+  '</td>\n' +
+            '           <td>' + data["description"]+  '</td>\n' +
+            '           <td>' + data["year"]+  '</td>\n' +
+            '           <td>' + data["author"]+  '</td>\n' +
+            '           <td>' + data["hardCover"]+  '</td>\n' +
+            '           <td>' + data["price"]+  '</td>\n' +
+            '       </tr>\n';
+        form +=
+            '   </tbody>\n' +
+            '</table>\n'
+        //Displays a form to change information
+        form +=
+            '\n' +
+            '<div class="container" style="padding-top: 30px">\n' +
+            '    <h2>Enter the Information to be Changed</h2>\n' +
+            '    <form method="POST" action="https://ancient-headland-74891.herokuapp.com/api/books/">\n' +
+            '        <div class="row mb-3 form-group">\n' +
+            '            <label for="title" class="col-sm-2 col-form-label">Title</label>\n' +
+            '            <input type="text" class="form-control" name="title" id="title">\n' +
+            '        </div>\n' +
+            '        <div class="row mb-3 form-group">\n' +
+            '            <label for="description" class="col-sm-2 col-form-label">Description</label>\n' +
+            '            <input type="text" class="form-control" name="description" id="description">\n' +
+            '        </div>\n' +
+            '        <div class="row mb-3 form-group">\n' +
+            '            <label for="year" class="col-sm-2 col-form-label">Year</label>\n' +
+            '            <input type="number" class="form-control" name="year" id="year">\n' +
+            '        </div>\n' +
+            '        <div class="row mb-3 form-group">\n' +
+            '            <label for="author" class="col-sm-2 col-form-label">Author</label>\n' +
+            '            <input type="text" class="form-control" name="author" id="author">\n' +
+            '        </div>\n' +
+            '        <fieldset class="row mb-3 form-group">\n' +
+            '            <legend class="col-form-label col-sm-2 pt-0">Hard Cover</legend>\n' +
+            '            <div class="col-sm-10">\n' +
+            '                <div class="form-check">\n' +
+            '                    <input class="form-check-input" type="radio" name="hardCover" id="hardCoverYes" value="true" checked>\n' +
+            '                    <label class="form-check-label" for="hardCoverYes">\n' +
+            '                        Yes\n' +
+            '                    </label>\n' +
+            '                </div>\n' +
+            '                <div class="form-check">\n' +
+            '                    <input class="form-check-input" type="radio" name="hardCover" id="hardCoverNo" value="false">\n' +
+            '                    <label class="form-check-label" for="hardCoverNo">\n' +
+            '                        No\n' +
+            '                    </label>\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '        </fieldset>\n' +
+            '        <div class="row mb-3 form-group">\n' +
+            '            <label for="price" class="col-sm-2 col-form-label">Price</label>\n' +
+            '            <input type="text" class="form-control" name="price" id="price">\n' +
+            '        </div>\n' +
+            '    </form>\n' +
+            '    <div class="container">\n' +
+            '        <button class="btn btn-primary" id="changeBook">Apply Changes</button>\n' +
+            '    </div>\n' +
+            '        <div class="container" id="message">\n' +
+            '    </div>\n' +
+            '</div>'
+        return form;
+    }
+    document.getElementById("submit").addEventListener("click", (event) =>{
+        let url = "https://ancient-headland-74891.herokuapp.com/api/books" + "/" + document.getElementById("inputID").value;
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (){
+            if (this.readyState === 4 && this.status === 200){
+                document.getElementById("output").innerHTML =
+                    CreateForm(JSON.parse(this.responseText));
+                //Add event listener for new change button similar logic as the code in insert-book.html
+                document.getElementById('changeBook').addEventListener("click", (event) => {
+                    let url = "https://ancient-headland-74891.herokuapp.com/api/books" + "/" + document.getElementById("inputID").value;
+                    let xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (this.readyState === 4 && this.status >= 200 && this.status < 300) {
+                            document.getElementById("message").innerHTML =
+                                "<pre>" + this.responseText + "</pre>";
+                        }
+                    };
+                    //checks to see which fields are filled and validates them
+                    let title = document.getElementById("title").value;
+                    let description = document.getElementById("description").value;
+                    let year = document.getElementById("year").value;
+                    let author = document.getElementById("author").value;
+                    let hardCover = document.getElementById("hardCoverYes").value;
+                    let price = document.getElementById("price").value;
+                    //bool indicates whether price should be allowed
+                    let allowPrice = true;
+                    //validates price
+                    if (price.length !== 0 && (price.indexOf('.') === -1 || price.length < 4)) {
+                        let message = 'Must enter a value or correctly format price with two decimals\n'
+                        document.getElementById("message").innerText += message;
+                        allowPrice = false;
+                    }
+                    //send request when fields are validated
+                    if (allowPrice === true) {
+                        let updatedValues = '';
+                        if (title.length > 0) {
+                            updatedValues += "title=" + title + "&";
+                        }
+                        if (description.length > 0) {
+                            updatedValues += "description=" + description + "&";
+                        }
+                        if (year.length > 0) {
+                            updatedValues += "year=" + year + "&";
+                        }
+                        if (author.length > 0) {
+                            updatedValues += "author=" + author + "&";
+                        }
+                        updatedValues += "hardCover=" + hardCover + "&";
+                        if (price.length > 0) {
+                            updatedValues += "price=" + price + "&";
+                        }
+                        xhttp.open('PATCH', url, true);
+                        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhttp.send(updatedValues);
+                    }
+                })
+            }
+            else {
+                document.getElementById("output").innerHTML =
+                    '<div class="container text-dark bg-warning">' +
+                    '<h2>Book with ID: ' +
+                    '\'' +
+                    document.getElementById("inputID").value +
+                    '\'' +
+                    ' could not be found</h2>' +
+                    '</div>'
+            }
+        };
+        xhttp.open('GET', url, true);
+        xhttp.send();
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
 </body>
