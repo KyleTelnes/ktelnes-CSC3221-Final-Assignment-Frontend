@@ -56,7 +56,7 @@
     <div class="container" id="delete">
 
     </div>
-    <div class="container" id="message">
+    <div class="container bg-success text-white" id="message">
 
     </div>
 </div>
@@ -93,6 +93,9 @@
         return table;
     }
     document.getElementById("submit").addEventListener("click", (event) =>{
+        //reset the visibility of the delete button and message if they are present
+        document.getElementById("delete").innerHTML = '';
+        document.getElementById("message").innerHTML = '';
         let url = "https://ancient-headland-74891.herokuapp.com/api/books" + "/" + document.getElementById("inputID").value;
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
