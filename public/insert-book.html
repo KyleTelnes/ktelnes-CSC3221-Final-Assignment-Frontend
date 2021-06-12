@@ -41,7 +41,7 @@
 </nav>
 <div class="container">
     <h1>Insert a Book into the Database</h1>
-    <form method="POST" action="https://ancient-headland-74891.herokuapp.com/api/books/">
+    <form>
         <div class="row mb-3">
             <label for="title" class="col-sm-2 col-form-label">Title</label>
             <input type="text" class="form-control" name="title" id="title" required>
@@ -86,49 +86,59 @@
     </div>
 </div>
 <script>
-    document.getElementById("addBook").addEventListener("click", () => {
+    const sendPOST = document.getElementById('addBook');
+
+    //validates the fields and sends the POST request if all fields are filled
+    const validateSend = () => {
+        //initialize bools to indicate whether a field is filled/correct
+        let filledTitle = true;
+        let filledDesc = true;
+        let filledYear = true;
+        let filledAuthor = true;
+        let filledPrice = true;
+        //hardCovVal indicates whether hardCoverYes is checked or not
         let hardCovVal;
         hardCovVal = document.getElementById("hardCoverYes").checked;
-        console.log(hardCovVal);
         document.getElementById("message").innerText = '';
         let message = '';
+        //check each field and update the message if one is wrong
         let title = document.getElementById("title").value;
         if (title === '') {
             message = 'Must enter a Title\n';
-            document.getElementById("message").innerText = message;
-            return false;
+            document.getElementById("message").innerText += message;
+            filledTitle = false;
         }
         let description = document.getElementById("description").value;
         if (description === '') {
             message = 'Must enter a description\n';
-            document.getElementById("message").innerText = message;
-            return false;
+            document.getElementById("message").innerText += message;
+            filledDesc = false;
         }
         let year = document.getElementById("year").value;
         if (year === '') {
             message = 'Must enter a year of publication\n';
-            document.getElementById("message").innerText = message;
-            return false;
+            document.getElementById("message").innerText += message;
+            filledYear = false;
         }
         let author = document.getElementById("author").value;
         if (author === '') {
             message = 'Must enter an author\n';
-            document.getElementById("message").innerText = message;
-            return false;
+            document.getElementById("message").innerText += message;
+            filledAuthor = false;
         }
         let decimal = document.getElementById("price").value;
-        if (decimal === '' || decimal.indexOf('.') === -1 || decimal[decimal.length - 3] !== '.') {
-            console.log("caught");
+        if (decimal === '' || decimal.indexOf('.') === -1 || decimal.length < 4) {
             message = 'Must enter a value or correctly format price with two decimals\n'
-            document.getElementById("message").innerText = message;
-            return false;
+            document.getElementById("message").innerText += message;
+            filledPrice = false;
         }
-        else {
+        if (filledTitle && filledDesc && filledYear && filledAuthor && filledPrice === true) {
+            //Send POST request
             let url = "https://ancient-headland-74891.herokuapp.com/api/books/"
             let xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function (){
                 if (this.readyState == 4 && this.status == 200){
-                    document.getElementById("message").innerHTML =
+                    document.getElementById("output").innerHTML =
                         "<pre>" + this.responseText + "</pre>";
                 }
             };
@@ -137,15 +147,16 @@
                 "description=" + document.getElementById("description").value  + "&" +
                 "year="  + document.getElementById("year").value  + "&" +
                 "author="  + document.getElementById("author").value  + "&" +
-                "hardCover="  + hardCovVal  + "&"
+                "hardCover="  + hardCovVal  + "&" +
                 "price="  + document.getElementById("price").value  + "&";
             xhttp.open('POST', url, true);
             // Just needed to place this line AFTER opening the object
             xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhttp.send(bookData);
-            return true;
         }
-    });
+    };
+
+    sendPOST.addEventListener('click', validateSend);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
