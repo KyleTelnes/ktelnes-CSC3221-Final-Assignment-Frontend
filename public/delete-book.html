@@ -56,7 +56,7 @@
     <div class="container" id="delete">
 
     </div>
-    <div class="container bg-success text-white" id="message">
+    <div class="container" id="message">
 
     </div>
 </div>
@@ -96,48 +96,59 @@
         //reset the visibility of the delete button and message if they are present
         document.getElementById("delete").innerHTML = '';
         document.getElementById("message").innerHTML = '';
-        let url = "https://ancient-headland-74891.herokuapp.com/api/books" + "/" + document.getElementById("inputID").value;
-        let xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function (){
-            if (this.readyState === 4 && this.status === 200){
-                document.getElementById("output").innerHTML =
-                    CreateTable(JSON.parse(this.responseText));
-                //Make delete button
-                document.getElementById("delete").innerHTML =
-                    '<div class="container">\n' +
-                    '   <button class="btn btn-primary" id="deleteBook">Delete Book</button>\n' +
-                    '</div>'
-                //Add event listener for new delete button
-                document.getElementById("deleteBook").addEventListener("click", (event) => {
-                    let url = "https://ancient-headland-74891.herokuapp.com/api/books" + "/" + document.getElementById("inputID").value;
-                    let xhr = new XMLHttpRequest();
-                    xhr.onreadystatechange = function () {
-                        if (this.readyState === 4 && this.status >= 200 && this.status < 300) {
-                            document.getElementById("message").innerHTML =
-                                "Book with ID: " + document.getElementById("inputID").value + " deleted successfully";
+        //if the input box is empty, display message telling user to input the id
+        if (document.getElementById("inputID").value.length === 0) {
+            document.getElementById("message").innerHTML =
+            '<div class="container text-dark bg-warning">' +
+            '<h2>Please input an ID</h2>' +
+            '</div>';
+        }
+        else {
+            let url = "https://ancient-headland-74891.herokuapp.com/api/books" + "/" + document.getElementById("inputID").value;
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    document.getElementById("output").innerHTML =
+                        CreateTable(JSON.parse(this.responseText));
+                    //Make delete button
+                    document.getElementById("delete").innerHTML =
+                        '<div class="container">\n' +
+                        '   <button class="btn btn-primary" id="deleteBook">Delete Book</button>\n' +
+                        '</div>'
+                    //Add event listener for new delete button
+                    document.getElementById("deleteBook").addEventListener("click", (event) => {
+                        let url = "https://ancient-headland-74891.herokuapp.com/api/books" + "/" + document.getElementById("inputID").value;
+                        let xhr = new XMLHttpRequest();
+                        xhr.onreadystatechange = function () {
+                            if (this.readyState === 4 && this.status >= 200 && this.status < 300) {
+                                document.getElementById("message").innerHTML =
+                                    '<div class="container text-light bg-success">' +
+                                    '<h2>Item deleted successfully</h2>' +
+                                    '</div>'
+                            } else {
+                                document.getElementById("message").innerHTML =
+                                    '<div class="container text-dark bg-warning">' +
+                                    '<h2>Something went wrong</h2>' +
+                                    '</div>'
+                            }
                         }
-                        else {
-                            document.getElementById("message").innerHTML =
-                                "Something went wrong";
-                        }
-                    }
-                    xhr.open('DELETE', url, true);
-                    xhr.send();
-                });
-            }
-            else {
-                document.getElementById("output").innerHTML =
-                    '<div class="container text-dark bg-warning">' +
-                    '<h2>Book with ID: ' +
-                    '\'' +
-                    document.getElementById("inputID").value +
-                    '\'' +
-                    ' could not be found</h2>' +
-                    '</div>'
-            }
-        };
-        xhttp.open('GET', url, true);
-        xhttp.send();
+                        xhr.open('DELETE', url, true);
+                        xhr.send();
+                    });
+                } else {
+                    document.getElementById("output").innerHTML =
+                        '<div class="container text-dark bg-warning">' +
+                        '<h2>Book with ID: ' +
+                        '\'' +
+                        document.getElementById("inputID").value +
+                        '\'' +
+                        ' could not be found</h2>' +
+                        '</div>'
+                }
+            };
+            xhttp.open('GET', url, true);
+            xhttp.send();
+        }
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
