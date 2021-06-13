@@ -10,6 +10,10 @@
     "start": "node ./bin/www",
     "test": "echo \"Error: no test available\" && exit 1"
   },
+  "keywords": [
+    "nodejs",
+    "heroku"
+  ],
   "dependencies": {
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
